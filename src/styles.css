@@ -65,6 +65,31 @@
 
 .dark { color-scheme: dark; }
 
+.light {
+  color-scheme: light;
+  --background: oklch(0.98 0.005 250);
+  --foreground: oklch(0.20 0.02 265);
+  --surface: oklch(0.96 0.008 250);
+  --surface-elevated: oklch(0.99 0.005 250);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.20 0.02 265);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.20 0.02 265);
+  --primary: oklch(0.58 0.17 245);
+  --primary-foreground: oklch(0.99 0.005 250);
+  --secondary: oklch(0.94 0.01 260);
+  --secondary-foreground: oklch(0.20 0.02 265);
+  --muted: oklch(0.94 0.01 260);
+  --muted-foreground: oklch(0.45 0.02 260);
+  --accent: oklch(0.58 0.17 245);
+  --accent-foreground: oklch(0.99 0.005 250);
+  --accent-cyan: oklch(0.62 0.14 210);
+  --accent-violet: oklch(0.55 0.20 295);
+  --border: oklch(0.90 0.01 260);
+  --input: oklch(0.97 0.008 260);
+  --ring: oklch(0.58 0.17 245);
+}
+
 @layer base {
   * { border-color: var(--color-border); }
   body {
