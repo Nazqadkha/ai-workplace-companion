@@ -16,6 +16,15 @@ import {
   Send,
   Loader2,
   AlertTriangle,
+  CheckSquare,
+  CalendarDays,
+  Users,
+  StickyNote,
+  Sun,
+  Moon,
+  Plus,
+  Trash2,
+  X,
 } from "lucide-react";
 import {
   generateEmail,
