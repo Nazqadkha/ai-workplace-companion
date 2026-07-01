@@ -49,22 +49,46 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
-type ToolKey = "email" | "meeting" | "tasks" | "research" | "chat";
+type ToolKey =
+  | "email"
+  | "meeting"
+  | "tasks"
+  | "research"
+  | "chat"
+  | "mytasks"
+  | "calendar"
+  | "team"
+  | "notes";
 
-const TOOLS: { key: ToolKey; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
-  { key: "email", label: "Smart Email Gen", icon: Mail },
-  { key: "meeting", label: "Meeting Summarizer", icon: FileText },
-  { key: "tasks", label: "AI Task Planner", icon: ListChecks },
-  { key: "research", label: "Research Assistant", icon: Search },
-  { key: "chat", label: "Assistant Chatbot", icon: MessageCircle },
+const TOOLS: { key: ToolKey; label: string; icon: React.ComponentType<{ className?: string }>; group: "ai" | "work" | "interactive" }[] = [
+  { key: "email", label: "Smart Email Gen", icon: Mail, group: "ai" },
+  { key: "meeting", label: "Meeting Summarizer", icon: FileText, group: "ai" },
+  { key: "tasks", label: "AI Task Planner", icon: ListChecks, group: "ai" },
+  { key: "research", label: "Research Assistant", icon: Search, group: "ai" },
+  { key: "mytasks", label: "My Tasks", icon: CheckSquare, group: "work" },
+  { key: "calendar", label: "Calendar & Blocks", icon: CalendarDays, group: "work" },
+  { key: "team", label: "Team Space", icon: Users, group: "work" },
+  { key: "notes", label: "Sticky Notes", icon: StickyNote, group: "work" },
+  { key: "chat", label: "Assistant Chatbot", icon: MessageCircle, group: "interactive" },
 ];
 
 function Home() {
-  const [active, setActive] = useState<ToolKey>("email");
+  const [active, setActive] = useState<ToolKey>("mytasks");
+  const [theme, setTheme] = useState<"dark" | "light">("dark");
+
+  useEffect(() => {
+    const root = document.documentElement;
+    root.classList.remove("dark", "light");
+    root.classList.add(theme);
+  }, [theme]);
+
+  const aiTools = TOOLS.filter((t) => t.group === "ai");
+  const workTools = TOOLS.filter((t) => t.group === "work");
+  const interactive = TOOLS.filter((t) => t.group === "interactive");
 
   return (
     <div className="min-h-screen flex text-foreground">
-      <Toaster theme="dark" position="top-right" />
+      <Toaster theme={theme} position="top-right" />
       {/* Sidebar */}
       <aside className="w-64 shrink-0 glass border-r border-border p-5 flex flex-col gap-6">
         <div className="flex items-center gap-3">
@@ -79,17 +103,23 @@ function Home() {
           </div>
         </div>
 
-        <div className="flex-1 flex flex-col gap-1">
+        <div className="flex-1 flex flex-col gap-1 overflow-y-auto -mr-2 pr-2">
           <p className="text-[10px] uppercase tracking-widest text-muted-foreground px-2 mb-2">
-            Core Tools
+            AI Tools
           </p>
-          {TOOLS.slice(0, 4).map((t) => (
+          {aiTools.map((t) => (
+            <NavItem key={t.key} tool={t} active={active === t.key} onClick={() => setActive(t.key)} />
+          ))}
+          <p className="text-[10px] uppercase tracking-widest text-muted-foreground px-2 mb-2 mt-4">
+            Workspace
+          </p>
+          {workTools.map((t) => (
             <NavItem key={t.key} tool={t} active={active === t.key} onClick={() => setActive(t.key)} />
           ))}
           <p className="text-[10px] uppercase tracking-widest text-muted-foreground px-2 mb-2 mt-4">
             Interactive
           </p>
-          {TOOLS.slice(4).map((t) => (
+          {interactive.map((t) => (
             <NavItem key={t.key} tool={t} active={active === t.key} onClick={() => setActive(t.key)} />
           ))}
         </div>
@@ -109,6 +139,14 @@ function Home() {
             </h2>
           </div>
           <div className="flex items-center gap-3">
+            <button
+              onClick={() => setTheme((t) => (t === "dark" ? "light" : "dark"))}
+              className="w-9 h-9 rounded-lg border border-border bg-surface-elevated/50 hover:bg-surface-elevated flex items-center justify-center transition-colors"
+              aria-label="Toggle theme"
+              title={theme === "dark" ? "Switch to light" : "Switch to dark"}
+            >
+              {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            </button>
             <div className="text-right">
               <p className="text-sm font-medium">Workspace User</p>
               <p className="text-[10px] text-muted-foreground uppercase tracking-widest">
@@ -122,12 +160,16 @@ function Home() {
         </header>
 
         <div className="p-8 max-w-5xl mx-auto">
-          <Disclaimer />
+          {(active === "email" || active === "meeting" || active === "tasks" || active === "research") && <Disclaimer />}
           <div className="mt-6">
             {active === "email" && <EmailTool />}
             {active === "meeting" && <MeetingTool />}
             {active === "tasks" && <TasksTool />}
             {active === "research" && <ResearchTool />}
+            {active === "mytasks" && <MyTasksTool />}
+            {active === "calendar" && <CalendarTool />}
+            {active === "team" && <TeamSpaceTool />}
+            {active === "notes" && <StickyNotesTool />}
             {active === "chat" && <ChatTool />}
           </div>
         </div>
